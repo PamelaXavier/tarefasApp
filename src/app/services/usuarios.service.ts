@@ -35,4 +35,29 @@ export class UsuariosService {
     return await this.armazenamentoService.salvarDados('usuarios', this.listaUsuarios);
 
   }
+
+  public async login(email: string, senha: string){
+    let usuario: Usuario;
+
+    await this.buscarTodos();
+
+    const listaTemporaria = this.listaUsuarios.filter(usuarioArmazenado =>{
+      return (usuarioArmazenado.email == email && usuarioArmazenado.senha == senha);
+    } ); // esse método retorna um array;
+
+    if(listaTemporaria.length > 0) {
+      usuario = listaTemporaria.reduce(item => item);
+    }
+
+    return usuario;
+  }
+
+  public salvarUsuarioLogado(usuario: Usuario){
+    delete usuario.senha;
+    this.armazenamentoService.salvarDados('usuarioLogado', usuario);
+  }
+
+  public async buscarUsuarioLogado(){
+    return await this.armazenamentoService.pegarDados('usuarioLogado');
+  }
 }
